@@ -1,4 +1,5 @@
 ﻿using LibApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -13,7 +14,6 @@ namespace LibApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IMemoryCache _memoryCache;
 
         public HomeController(ILogger<HomeController> logger, IMemoryCache memoryCache)
         {
@@ -30,9 +30,9 @@ namespace LibApp.Controllers
                 currentTime = DateTime.Now;
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                 {
-                    AbsoluteExpiration = DateTime.Now.AddSeconds(10),
+                    AbsoluteExpiration = DateTime.Now.AddSeconds(5),
                     Priority = CacheItemPriority.High,
-                    SlidingExpiration = TimeSpan.FromSeconds(10)
+                    SlidingExpiration = TimeSpan.FromSeconds(5)
                 };
 
                 _memoryCache.Set("CachedTime", currentTime, cacheEntryOptions);
@@ -51,5 +51,7 @@ namespace LibApp.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        private readonly IMemoryCache _memoryCache;
     }
 }
