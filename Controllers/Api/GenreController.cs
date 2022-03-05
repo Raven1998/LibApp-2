@@ -14,29 +14,29 @@ namespace LibApp.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomersController : ControllerBase
+    public class GenreController : ControllerBase
     {
-        private readonly CustomersRepository _customersRep;
+        private readonly GenresRepository _genresRep;
 
         private IMapper _mapper { get; }
 
-        public CustomersController(ApplicationDbContext context, IMapper mapper)
+        public GenreController(ApplicationDbContext context, IMapper mapper)
         {
-            _customersRep = new CustomersRepository(context);
+            _genresRep = new GenresRepository(context);
             _mapper = mapper;
         }
 
-        // GET api/Customers/
+        // GET api/Genres/
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<Genre>>> GetGenres()
         {
             try
             {
-                var customers = (await _customersRep.GetAsync())
+                var genres = (await _genresRep.GetAsync())
                 .ToList()
-                .Select(_mapper.Map<Customer, CustomerDto>);
+                .Select(_mapper.Map<Genre, GenreDto>);
 
-                return Ok(customers);
+                return Ok(genres);
             }
             catch (Exception)
             {
@@ -45,16 +45,16 @@ namespace LibApp.Controllers.Api
             }
         }
 
-        // GET api/Customers/{id}
+        // GET api/Genres/{id}
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Customer>> GetCustomerById(int id)
+        public async Task<ActionResult<Genre>> GetGenreById(int id)
         {
             try
             {
-                var result = await _customersRep.GetByIdAsync(id);
+                var result = await _genresRep.GetByIdAsync(id);
                 if (result == null) return NotFound();
 
-                return Ok(_mapper.Map<Customer, CustomerDto>(result));
+                return Ok(_mapper.Map<Genre, GenreDto>(result));
             }
             catch (Exception)
             {
@@ -63,18 +63,18 @@ namespace LibApp.Controllers.Api
             }
         }
 
-        // Delete api/Customers/{id}
+        // Delete api/Genres/{id}
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                var CustomerToDelete = await _customersRep.GetByIdAsync(id);
+                var GenreToDelete = await _genresRep.GetByIdAsync(id);
 
-                if (CustomerToDelete == null)
-                    return NotFound($"Customer with Id = {id} not found");
+                if (GenreToDelete == null)
+                    return NotFound($"Genre with Id = {id} not found");
 
-                await _customersRep.DeleteAsync(CustomerToDelete);
+                await _genresRep.DeleteAsync(GenreToDelete);
                 return Ok();
             }
             catch (Exception)
@@ -84,16 +84,16 @@ namespace LibApp.Controllers.Api
             }
         }
 
-        // Post api/Customers/
+        // Post api/Genres/
         [HttpPost]
-        public async Task<ActionResult> Add(CustomerDto customer)
+        public async Task<ActionResult> Add(GenreDto genre)
         {
             try
             {
-                if (customer == null)
+                if (genre == null)
                     return BadRequest();
 
-                await _customersRep.AddAsync(_mapper.Map<CustomerDto, Customer>(customer));
+                await _genresRep.AddAsync(_mapper.Map<GenreDto, Genre>(genre));
 
                 return Ok();
             }
@@ -104,21 +104,21 @@ namespace LibApp.Controllers.Api
             }
         }
 
-        // Put api/Customers/{id}
+        // Put api/Genres/{id}
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Update(int id, CustomerDto customer)
+        public async Task<ActionResult> Update(int id, GenreDto genre)
         {
             try
             {
-                if (id != customer.Id)
-                    return BadRequest("Customer ID mismatch");
+                if (id != genre.Id)
+                    return BadRequest("Genre ID mismatch");
 
-                var CustomerToUpdate = await _customersRep.GetByIdAsync(id);
+                var GenreToUpdate = await _genresRep.GetByIdAsync(id);
 
-                if (CustomerToUpdate == null)
-                    return NotFound($"Customer with Id = {id} not found");
+                if (GenreToUpdate == null)
+                    return NotFound($"Genre with Id = {id} not found");
 
-                await _customersRep.UpdateAsync(_mapper.Map<CustomerDto, Customer>(customer));
+                await _genresRep.UpdateAsync(_mapper.Map<GenreDto, Genre>(genre));
                 return Ok();
             }
             catch (Exception)

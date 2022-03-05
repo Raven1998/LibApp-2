@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LibApp.Data;
 using Microsoft.EntityFrameworkCore;
@@ -13,97 +14,176 @@ namespace LibApp.Models
             using (var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
-                context.Database.EnsureCreated();
-                if (context.MembershipTypes.Any() && context.Genre.Any() && context.Customers.Any() && context.Books.Any())
+
+                /* Seed data to MembershipTypes */
+
+                if (context.MembershipTypes.Any())
                 {
                     Console.WriteLine("Database already seeded");
                     return;
                 }
 
-                context.MembershipTypes.AddRange(
-                new MembershipType
-                {
-                    Id = 1,
-                    SignUpFee = 0,
-                    DurationInMonths = 0,
-                    DiscountRate = 0,
-                    Name = "Pay as You GO"
-                },
-                new MembershipType
-                {
-                    Id = 2,
-                    SignUpFee = 30,
-                    DurationInMonths = 1,
-                    DiscountRate = 10,
-                    Name = "Monthly"
-                },
-                new MembershipType
-                {
-                    Id = 3,
-                    SignUpFee = 90,
-                    DurationInMonths = 3,
-                    DiscountRate = 15,
-                    Name = "Quaterly"
-                },
-                new MembershipType
-                {
-                    Id = 4,
-                    SignUpFee = 300,
-                    DurationInMonths = 12,
-                    DiscountRate = 20,
-                    Name = "Yearly"
-                });
+                var MembershipTypesToAdd = new List<MembershipType>{
+                    new MembershipType
+                    {
+                        Id = 1,
+                        Name = "Pay as You Go",
+                        SignUpFee = 0,
+                        DurationInMonths = 0,
+                        DiscountRate = 0
+                    },
+                    new MembershipType
+                    {
+                        Id = 2,
+                        Name = "Monthly",
+                        SignUpFee = 30,
+                        DurationInMonths = 1,
+                        DiscountRate = 10
+                    },
+                    new MembershipType
+                    {
+                        Id = 3,
+                        Name = "Quaterly",
+                        SignUpFee = 90,
+                        DurationInMonths = 3,
+                        DiscountRate = 15
+                    },
+                    new MembershipType
+                    {
+                        Id = 4,
+                        Name = "Yearly",
+                        SignUpFee = 300,
+                        DurationInMonths = 12,
+                        DiscountRate = 20
+                    }
+                };
 
-              
+                foreach (MembershipType MsT in MembershipTypesToAdd)
+                {
+                    context.MembershipTypes.AddRange(MsT);
+                }
 
-                context.Customers.AddRange(
-                new Customer
-                {
-                    Name = "Rafal Kruczkowski",
-                    Birthdate = new DateTime(1998, 3, 6),
-                    HasNewsletterSubscribed = true,
-                    MembershipTypeId = 1
-                },
-                new Customer
-                {
-                    Name = "Zbigniew Stonoga",
-                    Birthdate = new DateTime(1992, 1, 4),
-                    HasNewsletterSubscribed = false,
-                    MembershipTypeId = 2
-                },
-                new Customer
-                {
-                    Name = "Hasbulla Magomedov",
-                    Birthdate = new DateTime(2002, 5, 9),
-                    HasNewsletterSubscribed = false,
-                    MembershipTypeId = 2,
-                });
 
-                context.Books.AddRange(
-                new Book
+
+                /* Seed data to Books */
+
+                var BooksToAdd = new List<Book>{
+                    new Book
+                    {
+                        Name = "Wiedzmin",
+                        AuthorName = "Andrzej Sapkowski",
+                        GenreId = 1,
+                        DateAdded = DateTime.Now.AddDays(-1),
+                        ReleaseDate = DateTime.Now.AddDays(-3),
+                        NumberInStock = 12,
+                        NumberAvailable = 12,
+                    },
+                    new Book
+                    {
+                        Name = "Scooby Doo",
+                        AuthorName = "Stewen Hawking",
+                        GenreId = 2,
+                        DateAdded = DateTime.Now.AddDays(-1),
+                        ReleaseDate = DateTime.Now.AddDays(-3),
+                        NumberInStock = 12,
+                        NumberAvailable = 12,
+                    },
+                    new Book
+                    {
+                        Name = "Die Hard",
+                        AuthorName = "Jason Statham",
+                        GenreId = 3,
+                        DateAdded = DateTime.Now.AddDays(-1),
+                        ReleaseDate = DateTime.Now.AddDays(-3),
+                        NumberInStock = 12,
+                        NumberAvailable = 12,
+                    },
+                    new Book
+                    {
+                        Name = "2012",
+                        AuthorName = "Baba Vanga",
+                        GenreId = 4,
+                        DateAdded = DateTime.Now.AddDays(-1),
+                        ReleaseDate = DateTime.Now.AddDays(-3),
+                        NumberInStock = 12,
+                        NumberAvailable = 12,
+                    }
+                };
+
+                foreach (Book book in BooksToAdd)
                 {
-                    ReleaseDate = new DateTime(2000, 1, 1),
-                    AuthorName = "Andrzej Sapkowski",
-                    GenreId = 6,
-                    Name = "Wiedzmin",
-                    NumberInStock = 15,
-                },
-                new Book
+                    context.Books.AddRange(book);
+                }
+
+
+
+                /* Seed data to Customers */
+
+                var CustomersToAdd = new List<Customer>{
+                    new Customer
+                    {
+                           Name = "Rafal Kruczkowski",
+                           HasNewsletterSubscribed = true,
+                           MembershipTypeId = 1,
+                           Birthdate = DateTime.Now.AddYears(-10),
+                    },
+                    new Customer
+                    {
+                           Name = "Zbigniew Stonoga",
+                           HasNewsletterSubscribed = true,
+                           MembershipTypeId = 2,
+                           Birthdate = DateTime.Now.AddYears(-10),
+                    },
+                    new Customer
+                    {
+                           Name = "Hasbulla Magomedov",
+                           HasNewsletterSubscribed = true,
+                           MembershipTypeId = 3,
+                           Birthdate = DateTime.Now.AddYears(-10),
+                    },
+                    new Customer
+                    {
+                           Name = "Andrzej Zielonka",
+                           HasNewsletterSubscribed = true,
+                           MembershipTypeId = 4,
+                           Birthdate = DateTime.Now.AddYears(-10),
+                    }
+                };
+
+                foreach (Customer cust in CustomersToAdd)
                 {
-                    ReleaseDate = new DateTime(1998, 2, 3),
-                    AuthorName = "Steven Hawking",
-                    GenreId = 1,
-                    Name = "Scooby Doo",
-                    NumberInStock = 9,
-                },
-                new Book
+                    context.Customers.AddRange(cust);
+                }
+
+
+
+                /* Seed data to Rentals */
+
+                var RentalsToAdd = new List<Rental>();
+
+                foreach (Book book in BooksToAdd)
                 {
-                    ReleaseDate = new DateTime(1996, 3, 12),
-                    AuthorName = "Jason Statham",
-                    GenreId = 1,
-                    Name = "Die Hard",
-                    NumberInStock = 13,
-                });
+                    foreach (Customer cust in CustomersToAdd)
+                    {
+                        RentalsToAdd.Add(
+                            new Rental
+                            {
+                                Book = book,
+                                Customer = cust,
+                                DateRented = DateTime.Now.AddDays(book.GenreId + cust.MembershipTypeId)
+                            }
+                        );
+                    }
+                }
+
+                foreach (Rental rental in RentalsToAdd)
+                {
+                    context.Rentals.AddRange(rental);
+                }
+
+
+                /* Update data in context */
+
                 context.SaveChanges();
             }
         }
